@@ -42,5 +42,34 @@ class BarangController {
         header("Location: index.php?page=barang&pesan=sukses_hapus");
         exit;
     }
+    // Proses Edit Barang
+    public function edit() {
+        // Kalau tombol 'UPDATE DATA' diklik (POST)
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $id_barang = $_POST['id_barang'];
+            $nama = $_POST['nama_barang'];
+            $jumlah = $_POST['jumlah'];
+            $kondisi = $_POST['kondisi'];
+
+            if ($this->model->updateBarang($id_barang, $nama, $jumlah, $kondisi)) {
+                // Sukses update, lempar ke tabel dengan pesan sukses
+                header("Location: index.php?page=barang&pesan=sukses_edit");
+                exit;
+            }
+        } else {
+            // Kalau cuma ngeklik tombol kuning 'Edit' di tabel (GET)
+            if (isset($_GET['id'])) {
+                $id_barang = $_GET['id'];
+                // Panggil model buat nyari data barang lama
+                $barang_edit = $this->model->getBarangById($id_barang);
+                
+                // Buka halaman form edit sambil bawa data $barang_edit
+                require_once 'views/edit_barang.php';
+            } else {
+                header("Location: index.php?page=barang");
+                exit;
+            }
+        }
+    }
 }
 ?>

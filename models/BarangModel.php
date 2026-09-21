@@ -27,5 +27,22 @@ class BarangModel {
         $id_barang = (int)$id_barang;
         return $this->db->query("DELETE FROM barang WHERE id_barang = $id_barang");
     }
+
+    // AMBIL 1 BARANG SPESIFIK BUAT DITAMPILIN DI FORM EDIT
+    public function getBarangById($id_barang) {
+        $id_barang = (int)$id_barang; // Pastikan ID berupa angka
+        $hasil = $this->db->query("SELECT * FROM barang WHERE id_barang = $id_barang");
+        return $hasil->fetch_assoc(); // Balikin 1 baris data aja
+    }
+
+    // PROSES TIMPA (UPDATE) DATA KE DATABASE
+    public function updateBarang($id_barang, $nama, $jumlah, $kondisi) {
+        $id_barang = (int)$id_barang;
+        $nama = mysqli_real_escape_string($this->db, $nama);
+        $kondisi = mysqli_real_escape_string($this->db, $kondisi);
+
+        $query = "UPDATE barang SET nama_barang = '$nama', jumlah = '$jumlah', kondisi = '$kondisi' WHERE id_barang = $id_barang";
+        return $this->db->query($query);
+    }
 }
 ?>

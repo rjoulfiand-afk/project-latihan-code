@@ -32,5 +32,9 @@ switch ($page) {
     default:
         $auth->login();
         break;
+
+    case 'edit_barang':
+        $barang->edit(); // <--- Nampilin form edit & nyimpen perubahannya
+        break;
 }
 ?>

@@ -88,7 +88,7 @@ if (!isset($_SESSION['is_login'])) {
                             </td>
                             <td>
                                 <!-- Tombol Edit (Belum ada fungsinya) -->
-                                <a href="#" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="index.php?page=edit_barang&id=<?php echo $row['id_barang']; ?>" class="btn btn-warning btn-sm text-dark fw-bold">Edit</a>
                                 
                                 <!-- Tombol Hapus (Udah ada fungsinya + alert konfirmasi) -->
                                 <a href="index.php?page=hapus_barang&id=<?php echo $row['id_barang']; ?>" 
