@@ -31,7 +31,7 @@ class AuthController {
                 exit;
             } else {
                 // Kalau salah, kasih pesan error
-                $error = "Maaf, Data tidak ditemukan! Cek kembali Username Anda";
+                $error = "";
             }
         }
 

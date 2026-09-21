@@ -1,4 +1,6 @@
 <?php
+// models/UserModel.php
+
 class UserModel {
     private $db;
 
@@ -6,34 +8,42 @@ class UserModel {
         $this->db = $koneksi;
     }
 
-    // Fungsi buat ngecek Login
+    // Fungsi Ngecek Login dengan keamanan Password_Verify
     public function cekLogin($username, $password) {
-        $username = mysqli_real_escape_string($this->db, $username);
-        $password = mysqli_real_escape_string($this->db, $password);
+        // Pake PDO 'prepare' buat nutup celah SQL Injection
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE username = ?");
+        $stmt->execute([$username]);
+        
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $query = "SELECT * FROM users WHERE username = '$username'";
-        $hasil = $this->db->query($query);
-
-        if ($hasil->num_rows > 0) {
-            $user = $hasil->fetch_assoc();
-            if ($password == $user['password']) {
-                return $user; 
+        // Kalau usernamenya ketemu
+        if ($user) {
+            // Cek password! Karena di database di-hash, kita nyocokinnya pakai password_verify()
+            if (password_verify($password, $user['password'])) {
+                return $user; // Password bener, balikin data user
             }
         }
-        return false; 
+        return false; // Password atau username salah
     }
 
-    // INI FUNGSI YANG BIKIN ERROR TADI KARENA BELUM ADA
-    // Fungsi buat nyimpen data pendaftaran ke tabel users
+    // Fungsi Bikin Akun dengan Enkripsi Password
     public function register($nama, $username, $password) {
-        // Mencegah SQL Injection
-        $nama = mysqli_real_escape_string($this->db, $nama);
-        $username = mysqli_real_escape_string($this->db, $username);
-        $password = mysqli_real_escape_string($this->db, $password);
+        // Enkripsi passwordnya dulu sebelum dimasukin ke database
+        // (Misal password "12345" bakal berubah jadi "$2y$10$abcdefghijklmnopqrstuvwxyz...")
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        $query = "INSERT INTO users (nama_lengkap, username, password) VALUES ('$nama', '$username', '$password')";
+        // Pake PDO 'prepare' buat ngamanin inputan
+        $stmt = $this->db->prepare("INSERT INTO users (nama_lengkap, username, password) VALUES (?, ?, ?)");
         
-        return $this->db->query($query);
+        // Eksekusi data ke database
+        return $stmt->execute([$nama, $username, $hashedPassword]);
+    }
+
+    // Tambahan: Fungsi ngecek apakah username udah dipakai orang lain
+    public function cekUsernameAda($username) {
+        $stmt = $this->db->prepare("SELECT id_user FROM users WHERE username = ?");
+        $stmt->execute([$username]);
+        return $stmt->fetch();
     }
 }
 ?>
