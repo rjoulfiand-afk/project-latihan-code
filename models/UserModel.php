@@ -1,30 +1,39 @@
 <?php
 class UserModel {
-    private $db; // Variabel buat nyimpen koneksi database
+    private $db;
 
-    // Fungsi ini otomatis jalan pas file ini dipanggil, buat masukin koneksi database
     public function __construct($koneksi) {
         $this->db = $koneksi;
     }
 
-    // Fungsi buat ngecek username dan password ke tabel users
+    // Fungsi buat ngecek Login
     public function cekLogin($username, $password) {
-        // Mencegah error keamanan gampang (SQL Injection)
         $username = mysqli_real_escape_string($this->db, $username);
         $password = mysqli_real_escape_string($this->db, $password);
 
-        // Perintah SQL buat nyari data yang cocok
-        $query = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
-        
-        // Jalanin perintahnya
+        $query = "SELECT * FROM users WHERE username = '$username'";
         $hasil = $this->db->query($query);
 
-        // Kalau datanya ketemu (jumlah barisnya lebih dari 0)
         if ($hasil->num_rows > 0) {
-            return $hasil->fetch_assoc(); // Balikin datanya (id, username, nama)
-        } else {
-            return false; // Kalau salah password/username, balikin false
+            $user = $hasil->fetch_assoc();
+            if ($password == $user['password']) {
+                return $user; 
+            }
         }
+        return false; 
+    }
+
+    // INI FUNGSI YANG BIKIN ERROR TADI KARENA BELUM ADA
+    // Fungsi buat nyimpen data pendaftaran ke tabel users
+    public function register($nama, $username, $password) {
+        // Mencegah SQL Injection
+        $nama = mysqli_real_escape_string($this->db, $nama);
+        $username = mysqli_real_escape_string($this->db, $username);
+        $password = mysqli_real_escape_string($this->db, $password);
+
+        $query = "INSERT INTO users (nama_lengkap, username, password) VALUES ('$nama', '$username', '$password')";
+        
+        return $this->db->query($query);
     }
 }
 ?>

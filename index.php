@@ -17,6 +17,11 @@ switch ($page) {
         require_once 'views/dashboard.php';
         break;
         
+    case 'register':
+        // INI YANG KURANG BRO: Kalau ngakses /index.php?page=register, jalankan fungsi register()
+        $auth->register();
+        break;
+        
     case 'logout':
         // Kalau ngakses /index.php?page=logout, panggil fungsi logout
         $auth->logout();

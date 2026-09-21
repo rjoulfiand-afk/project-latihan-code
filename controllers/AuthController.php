@@ -31,12 +31,33 @@ class AuthController {
                 exit;
             } else {
                 // Kalau salah, kasih pesan error
-                $error = "Aduh lur, Username atau Password salah!";
+                $error = "Maaf, Data tidak ditemukan! Cek kembali Username Anda";
             }
         }
 
         // Kalau belum ngeklik tombol atau gagal login, tampilin form loginnya
         require_once 'views/login.php';
+    }
+
+
+    public function register() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $nama = $_POST['nama_lengkap'];
+            $username = $_POST['username'];
+            $password = $_POST['password'];
+
+            // Panggil fungsi register dari model
+            if ($this->model->register($nama, $username, $password)) {
+                // Kalau sukses, arahin ke halaman login sambil bawa pesan sukses
+                header("Location: index.php?page=login&pesan=sukses_register");
+                exit;
+            } else {
+                $error = "Gagal bikin akun! Username mungkin udah dipakai.";
+            }
+        }
+        
+        // Panggil tampilan register
+        require_once 'views/register.php';
     }
 
     // Fungsi buat keluar (hapus sesi)
