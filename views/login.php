@@ -65,9 +65,6 @@
                             </div>
                             <button type="submit" class="btn btn-primary w-100 py-2 mb-3 shadow-sm">MASUK SEKARANG</button>
                             
-                            <div class="text-center">
-                                <span class="text-muted">Belum punya akun?</span> 
-                                <a href="index.php?page=register" class="text-decoration-none fw-bold">Buat Akun</a>
                             </div>
                         </form>
                     </div>
